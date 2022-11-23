@@ -7,7 +7,7 @@ APP使用的天气数据源是彩云天气的API，需要你注册自己的token
 彩云天气开放平台地址：
 https://dashboard.caiyunapp.com/user/sign_in/
 
-获取到token后填写到下图位置中即可运行项目
+获取到token后替换到下图位置中即可运行项目
 ![1669200297722](https://user-images.githubusercontent.com/60261425/203527527-276e0efd-b4aa-4674-896e-bdad0bd89f6e.png)
 
 ### 页面
