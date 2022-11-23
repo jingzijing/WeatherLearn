@@ -12,10 +12,10 @@ https://dashboard.caiyunapp.com/user/sign_in/
 
 ### 页面
 天气信息展示页面：
-![a58164423a8da225519fd9679125e4e](https://user-images.githubusercontent.com/60261425/203526879-00bc6a5d-ec81-4912-b6f9-1323ab0537fc.jpg)
+![天气信息展示页面15%](https://user-images.githubusercontent.com/60261425/203529359-ba8b1aac-abff-486f-b7cd-fb3327e817eb.jpg)
 
 城市列表页面：
-![051fede6816c76be6eea52caeee9587](https://user-images.githubusercontent.com/60261425/203527147-ca8df114-402a-4efd-ba76-7b395c83ac48.jpg)
+![城市列表页面15%](https://user-images.githubusercontent.com/60261425/203529446-47e9c9bb-1a40-4503-8c85-7b03b57d5286.jpg)
 
 城市信息管理页面：
-![5af1c85b3416e33d1f8b4995c97bf4d](https://user-images.githubusercontent.com/60261425/203527199-b41e66cb-b7ad-481d-bab0-34ca4c3d1071.jpg)
+![城市信息管理页面15%](https://user-images.githubusercontent.com/60261425/203529411-d2f4d0bc-e49e-4fc1-b4a1-e72eb686cdc0.jpg)
