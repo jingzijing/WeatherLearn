@@ -1,0 +1,145 @@
+package com.jzj.weatherlearn.ui;
+
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.jzj.weatherlearn.R;
+import com.jzj.weatherlearn.global.App;
+import com.jzj.weatherlearn.global.CitySetting;
+import com.jzj.weatherlearn.global.SharedPreferencesManager;
+import com.jzj.weatherlearn.model.City;
+
+import java.util.List;
+
+public class CityManageActivity extends AppCompatActivity {
+
+    private final static String MENU_TITLE = "城市管理";
+    private String TAG = CityManageActivity.class.getName();
+    private RecyclerView recyclerView;
+    private List<City> mCites;
+    private CityManageRecyclerViewAdapter adapter;
+    //城市列表是否数据变动
+    private boolean dataChangedFlag = false;
+    private Handler mHandler = new Handler();
+    private SharedPreferences sharedPreferences;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_city_manage);
+        /**
+         * sharedPreferences
+         */
+        sharedPreferences = SharedPreferencesManager.getSharedPreferences(TAG);
+        /**
+         * actionbar
+         */
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setCustomView(R.layout.activity_city_manage_toolbar_customerview);
+            TextView titleText = actionBar.getCustomView().findViewById(R.id.city_manage_toolbar_title);
+            titleText.setText(MENU_TITLE);
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowCustomEnabled(true);
+        }
+        /**
+         * recyclerview
+         */
+        mCites = CitySetting.getInstance().getCacheCities(sharedPreferences);
+        recyclerView = findViewById(R.id.city_manage_recyclerview);
+        adapter = new CityManageRecyclerViewAdapter();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layoutManager);
+        //recyclerview条目滑动监听
+        ItemTouchHelper touchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                if (CitySetting.getInstance().getCacheCities(sharedPreferences).size() > 1) {
+                    int position = viewHolder.getAdapterPosition();
+                    City city = mCites.get(position);
+                    CitySetting.getInstance().deleteCity(city, sharedPreferences);
+                    mCites = CitySetting.getInstance().getCacheCities(sharedPreferences);
+                    adapter.notifyItemRemoved(position);
+
+                    if (!dataChangedFlag)
+                        dataChangedFlag = true;
+                }
+            }
+        });
+        touchHelper.attachToRecyclerView(recyclerView);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferencesManager.itemDestroy(TAG);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            //返回键
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private class CityManageRecyclerViewAdapter extends RecyclerView.Adapter<CityManageRecyclerViewHolder> {
+        @NonNull
+        @Override
+        public CityManageRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(App.context).inflate(R.layout.activity_city_manage_item, parent, false);
+            return new CityManageRecyclerViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull CityManageRecyclerViewHolder holder, int position) {
+            City city = mCites.get(position);
+            holder.cityName.setText(city.getCityName());
+        }
+
+        @Override
+        public int getItemCount() {
+            return mCites.size();
+        }
+    }
+
+    private class CityManageRecyclerViewHolder extends RecyclerView.ViewHolder {
+
+        TextView cityName;
+
+        public CityManageRecyclerViewHolder(@NonNull View itemView) {
+            super(itemView);
+            cityName = itemView.findViewById(R.id.city_manage_city_name);
+        }
+    }
+
+
+}
