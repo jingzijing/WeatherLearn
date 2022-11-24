@@ -30,7 +30,7 @@ public class CityManageActivity extends AppCompatActivity {
     private final static String MENU_TITLE = "城市管理";
     private String TAG = CityManageActivity.class.getName();
     private RecyclerView recyclerView;
-    private List<City> mCites;
+    private List<City> mCityList;
     private CityManageRecyclerViewAdapter adapter;
     //城市列表是否数据变动
     private boolean dataChangedFlag = false;
@@ -61,7 +61,7 @@ public class CityManageActivity extends AppCompatActivity {
         /**
          * recyclerview
          */
-        mCites = CitySetting.getInstance().getCacheCities(sharedPreferences);
+        mCityList = CitySetting.getInstance().getCacheCities(sharedPreferences);
         recyclerView = findViewById(R.id.city_manage_recyclerview);
         adapter = new CityManageRecyclerViewAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -78,9 +78,9 @@ public class CityManageActivity extends AppCompatActivity {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 if (CitySetting.getInstance().getCacheCities(sharedPreferences).size() > 1) {
                     int position = viewHolder.getAdapterPosition();
-                    City city = mCites.get(position);
+                    City city = mCityList.get(position);
                     CitySetting.getInstance().deleteCity(city, sharedPreferences);
-                    mCites = CitySetting.getInstance().getCacheCities(sharedPreferences);
+                    mCityList = CitySetting.getInstance().getCacheCities(sharedPreferences);
                     adapter.notifyItemRemoved(position);
 
                     if (!dataChangedFlag)
@@ -121,13 +121,13 @@ public class CityManageActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull CityManageRecyclerViewHolder holder, int position) {
-            City city = mCites.get(position);
+            City city = mCityList.get(position);
             holder.cityName.setText(city.getCityName());
         }
 
         @Override
         public int getItemCount() {
-            return mCites.size();
+            return mCityList.size();
         }
     }
 

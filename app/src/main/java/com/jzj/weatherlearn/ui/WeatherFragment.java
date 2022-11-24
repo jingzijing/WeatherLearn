@@ -105,10 +105,12 @@ public class WeatherFragment extends Fragment {
      */
     public WeatherFragment(int mWeatherIndex) {
         this.mWeatherIndex = mWeatherIndex;
+        this.nowCity = CitySetting.getInstance().getCacheCities(sharedPreferences).get(mWeatherIndex);
     }
 
     public WeatherFragment(int mWeatherIndex, ActivityCallback callback) {
         this.mWeatherIndex = mWeatherIndex;
+        this.nowCity = CitySetting.getInstance().getCacheCities(sharedPreferences).get(mWeatherIndex);
         this.mWeatherActivityWeatherBgCallBack = callback;
     }
 
@@ -124,7 +126,6 @@ public class WeatherFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_weather_fragment, container, false);
         mUnbinder = ButterKnife.bind(this, view);
         childViewAlphaSetFlag = false;
-        nowCity = CitySetting.getInstance().getCacheCities(sharedPreferences).get(mWeatherIndex);
         weatherAndCityViewModel = new ViewModelProvider(this).get(WeatherAndCityViewModel.class);
         weatherAndCityViewModel.getCityAndWeatherLiveData().observe(getViewLifecycleOwner(), new Observer<CityAndWeather>() {
             @Override
@@ -162,7 +163,6 @@ public class WeatherFragment extends Fragment {
     public void onResume() {
         super.onResume();
         //获取天气信息,并将信息展示
-        nowCity = CitySetting.getInstance().getCacheCities(sharedPreferences).get(mWeatherIndex);
         weatherAndCityViewModel.getWeatherInfo(nowCity);
     }
 

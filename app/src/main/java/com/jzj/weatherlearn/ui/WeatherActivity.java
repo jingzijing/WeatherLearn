@@ -3,6 +3,7 @@ package com.jzj.weatherlearn.ui;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.ComponentName;
@@ -162,8 +163,10 @@ public class WeatherActivity extends AppCompatActivity {
                 Intent intent = new Intent(WeatherActivity.this, CitySelectActivity.class);
                 startActivity(intent);
             } else {
+                clearFragments();
                 loadCityDataFragments();
-                mAdapter.notifyDataSetChanged();
+                mAdapter = new ViewPagerFragmentStateAdapter(getSupportFragmentManager(), getLifecycle(), mFragments);
+                viewPage.setAdapter(mAdapter);
                 indicator.setTotalIndex(mFragments.size());
                 indicator.setCurrentIndex(0);
                 viewPage.setCurrentItem(0);
@@ -174,11 +177,7 @@ public class WeatherActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mFragments.size() > 0) {
-            for (Object fragment : mFragments) {
-                ((Fragment) fragment).onDestroy();
-            }
-        }
+        clearFragments();
         SharedPreferencesManager.itemDestroy(TAG);
     }
 
@@ -207,6 +206,22 @@ public class WeatherActivity extends AppCompatActivity {
         mFragments.clear();
         for (int i = 0; i < mCitySize; i++) {
             mFragments.add(WeatherFragment.newInstance(i, weatherBgCallback));
+        }
+    }
+
+    /**
+     * 清理fragment缓存
+     */
+    private void clearFragments() {
+        //清理fragment缓存
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        if (fragments.size() > 0) {
+            for (Fragment fragment : fragments) {
+                fragmentTransaction.remove(fragment);
+            }
+            fragmentTransaction.commitNow();
+            mFragments.clear();
         }
     }
 
