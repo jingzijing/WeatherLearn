@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -127,6 +128,14 @@ public class WeatherAndCityViewModel extends AndroidViewModel {
     }
 
     /**
+     * 删除缓存重新从网络获取天气信息
+     */
+    public void getWeatherInfoFromNetwork(City city) {
+        sharedPreferences.edit().remove(String.valueOf(city.getCityCode())).apply();
+        getWeatherInfo(city);
+    }
+
+    /**
      * 获取生活建议
      *
      * @param weather
@@ -184,21 +193,15 @@ public class WeatherAndCityViewModel extends AndroidViewModel {
         switch (skyconVal) {
             //晴天
             case SkyconUtil.CLEAR_DAY:
-                drawable = context.getResources().getDrawable(R.drawable.ic_clear_day, null);
-                break;
             case SkyconUtil.CLEAR_NIGHT:
                 drawable = context.getResources().getDrawable(R.drawable.ic_clear_day, null);
                 break;
             //多云
             case SkyconUtil.PARTLY_CLOUDY_DAY:
-                drawable = context.getResources().getDrawable(R.drawable.ic_partly_cloudy_day, null);
-                break;
             case SkyconUtil.PARTLY_CLOUDY_NIGHT:
-                drawable = context.getResources().getDrawable(R.drawable.ic_partly_cloudy_day, null);
-                break;
             //阴天
             case SkyconUtil.CLOUDY:
-                drawable = context.getResources().getDrawable(R.drawable.ic_cloudy, null);
+                drawable = context.getResources().getDrawable(R.drawable.ic_partly_cloudy_day, null);
                 break;
             //雨天
             case SkyconUtil.LIGHT_RAIN:
@@ -208,8 +211,6 @@ public class WeatherAndCityViewModel extends AndroidViewModel {
                 drawable = context.getResources().getDrawable(R.drawable.ic_moderate_rain, null);
                 break;
             case SkyconUtil.HEAVY_RAIN:
-                drawable = context.getResources().getDrawable(R.drawable.ic_heavy_rain, null);
-                break;
             case SkyconUtil.STORM_RAIN:
                 drawable = context.getResources().getDrawable(R.drawable.ic_heavy_rain, null);
                 break;
@@ -225,18 +226,15 @@ public class WeatherAndCityViewModel extends AndroidViewModel {
                 drawable = context.getResources().getDrawable(R.drawable.ic_moderate_snow, null);
                 break;
             case SkyconUtil.HEAVY_SNOW:
-                drawable = context.getResources().getDrawable(R.drawable.ic_heavy_snow, null);
-                break;
             case SkyconUtil.STORM_SNOW:
                 drawable = context.getResources().getDrawable(R.drawable.ic_heavy_snow, null);
                 break;
             //尘
             case SkyconUtil.DUST:
-                drawable = context.getResources().getDrawable(R.drawable.ic_dust_with_wind, null);
-                break;
             case SkyconUtil.SAND:
                 drawable = context.getResources().getDrawable(R.drawable.ic_dust_with_wind, null);
                 break;
+            //风
             case SkyconUtil.WIND:
                 drawable = context.getResources().getDrawable(R.drawable.ic_wind, null);
                 break;

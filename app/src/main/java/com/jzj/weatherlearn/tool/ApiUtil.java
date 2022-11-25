@@ -3,7 +3,7 @@ package com.jzj.weatherlearn.tool;
 public class ApiUtil {
 
     //彩云天气token
-    public static final String TOKEN = "请填写你申请的token";
+    public static final String TOKEN = "输入你申请的token";
     //URL替换值部分
     public static final String REPLACE_STR = "#longitude,latitude#";
     //彩云天气天级别预报API

@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +24,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.jzj.weatherlearn.R;
 import com.jzj.weatherlearn.global.CitySetting;
@@ -49,6 +51,7 @@ public class WeatherFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     //更新UI数据的消息标识
     public static final int WEATHER_ON_RESPONSE = 2;
+    public static final int WEATHER_ON_NETWORD_REQUEST = 3;
     // 使用newInstance时由外部提供
     private int mWeatherIndex;
     //butterknife
@@ -64,7 +67,16 @@ public class WeatherFragment extends Fragment {
                     Weather weather = (Weather) msg.obj;
                     if (weatherAndCityViewModel.getCityAndWeatherLiveData().getValue() != null) {
                         updateToView();
+                        if (refreshFlag) {
+                            Toast.makeText(getActivity(), "刷新成功", Toast.LENGTH_SHORT).show();
+                            refreshFlag = false;
+                        }
                     }
+                    break;
+                //刷新天气信息
+                case WEATHER_ON_NETWORD_REQUEST:
+                    weatherAndCityViewModel.getWeatherInfoFromNetwork(nowCity);
+                    refreshFlag = true;
                     break;
             }
         }
@@ -97,6 +109,7 @@ public class WeatherFragment extends Fragment {
     //回调接口由 WeatherActivity提供,功能是根据api提供的skycon类型改变背景图片
     private ActivityCallback mWeatherActivityWeatherBgCallBack;
     private WeatherAndCityViewModel weatherAndCityViewModel;
+    private boolean refreshFlag;
 
     /**
      * mWeatherIndex和 缓存城市列表下标 相同
@@ -131,7 +144,7 @@ public class WeatherFragment extends Fragment {
             @Override
             public void onChanged(CityAndWeather cityAndWeather) {
                 //更新UI消息
-                sendWeatherInfoToHandler(cityAndWeather.weather, mHandler, WEATHER_ON_RESPONSE);
+                sendWeatherInfoToHandler(cityAndWeather.weather, WEATHER_ON_RESPONSE);
                 //更新背景图消息
                 mWeatherActivityWeatherBgCallBack.handleWeatherBg(cityAndWeather.weather, WeatherActivity.WEATHER_BG_UPDATE_MESSAGE);
             }
@@ -241,11 +254,11 @@ public class WeatherFragment extends Fragment {
      *
      * @param weather
      */
-    public static void sendWeatherInfoToHandler(Weather weather, Handler handler, int messageWhat) {
+    public void sendWeatherInfoToHandler(Weather weather, int messageWhat) {
         Message message = Message.obtain();
         message.what = messageWhat;
         message.obj = weather;
-        handler.sendMessage(message);
+        mHandler.sendMessage(message);
     }
 
     /**

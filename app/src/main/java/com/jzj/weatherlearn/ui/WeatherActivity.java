@@ -194,6 +194,10 @@ public class WeatherActivity extends AppCompatActivity {
             case R.id.city_manage:
                 Intent intent = new Intent(WeatherActivity.this, CityManageActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.city_refresh:
+                WeatherFragment fragment = (WeatherFragment) mFragments.get(viewPage.getCurrentItem());
+                fragment.sendWeatherInfoToHandler(null, WeatherFragment.WEATHER_ON_NETWORD_REQUEST);
         }
         return super.onOptionsItemSelected(item);
     }
