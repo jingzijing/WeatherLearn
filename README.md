@@ -2,7 +2,8 @@
 android平台 天气预报APP
 
 ### 页面
-|  ----  | ----  | ----  |
+|     |    |   |
+|  :----:  | :----:  | :----:  |
 | ![天气展示(1)](https://user-images.githubusercontent.com/60261425/204461257-774a74dc-35b1-485a-b464-56dba02a48e8.png)  | ![城市选择(1)](https://user-images.githubusercontent.com/60261425/204461290-fd567f9c-87f4-43ab-8221-b17169b95870.png) | ![城市信息管理(1)](https://user-images.githubusercontent.com/60261425/204461303-d2371d35-1d54-43ef-ba16-197b43d6c915.png) |
 
 ### 说明
