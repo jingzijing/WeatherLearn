@@ -1,6 +1,14 @@
 package com.jzj.weatherlearn.tool;
 
+import android.graphics.drawable.Drawable;
+
+import com.jzj.weatherlearn.R;
+import com.jzj.weatherlearn.global.App;
+import com.jzj.weatherlearn.model.Weather;
 import com.rainy.weahter_bg_plug.utils.WeatherUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 处理彩云api的天气信息
@@ -120,5 +128,170 @@ public class SkyconUtil {
                 break;
         }
         return weatherType;
+    }
+
+    /**
+     * 天气现象图标映射
+     */
+    public static Drawable handlerWeatherIcno(String skyconVal) {
+        Drawable drawable = null;
+        switch (skyconVal) {
+            //晴天
+            case SkyconUtil.CLEAR_DAY:
+            case SkyconUtil.CLEAR_NIGHT:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_clear_day, null);
+                break;
+            //多云
+            case SkyconUtil.PARTLY_CLOUDY_DAY:
+            case SkyconUtil.PARTLY_CLOUDY_NIGHT:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_partly_cloudy_day, null);
+                break;
+            //阴天
+            case SkyconUtil.CLOUDY:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_cloudy_day, null);
+                break;
+            //雨天
+            case SkyconUtil.LIGHT_RAIN:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_light_rain, null);
+                break;
+            case SkyconUtil.MODERATE_RAIN:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_moderate_rain, null);
+                break;
+            case SkyconUtil.HEAVY_RAIN:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_heavy_rain, null);
+                break;
+            case SkyconUtil.STORM_RAIN:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_storm_rain, null);
+                break;
+            //雾
+            case SkyconUtil.FOG:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_fog, null);
+                break;
+            //雪
+            case SkyconUtil.LIGHT_SNOW:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_light_snow, null);
+                break;
+            case SkyconUtil.MODERATE_SNOW:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_moderate_snow, null);
+                break;
+            case SkyconUtil.HEAVY_SNOW:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_heavy_snow, null);
+                break;
+            case SkyconUtil.STORM_SNOW:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_storm_snow, null);
+                break;
+            //尘
+            case SkyconUtil.DUST:
+            case SkyconUtil.SAND:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_dust_with_wind, null);
+                break;
+            //风
+            case SkyconUtil.WIND:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_wind, null);
+                break;
+            default:
+                drawable = App.context.getResources().getDrawable(R.drawable.ic_partly_cloudy_day, null);
+                break;
+        }
+        return drawable;
+    }
+
+    /**
+     * 天气现象名字
+     */
+    public static String getSkyConName(String skyconVal) {
+        switch (skyconVal) {
+            //晴天
+            case SkyconUtil.CLEAR_DAY:
+            case SkyconUtil.CLEAR_NIGHT:
+                return "晴";
+            //多云
+            case SkyconUtil.PARTLY_CLOUDY_DAY:
+            case SkyconUtil.PARTLY_CLOUDY_NIGHT:
+                return "多云";
+            //阴天
+            case SkyconUtil.CLOUDY:
+                return "阴";
+            //雨天
+            case SkyconUtil.LIGHT_RAIN:
+                return "小雨";
+            case SkyconUtil.MODERATE_RAIN:
+                return "中雨";
+            case SkyconUtil.HEAVY_RAIN:
+                return "大雨";
+            case SkyconUtil.STORM_RAIN:
+                return "暴雨";
+            //雾
+            case SkyconUtil.FOG:
+                return "雾";
+            //雪
+            case SkyconUtil.LIGHT_SNOW:
+                return "小雪";
+            case SkyconUtil.MODERATE_SNOW:
+                return "中雪";
+            case SkyconUtil.HEAVY_SNOW:
+                return "大雪";
+            case SkyconUtil.STORM_SNOW:
+                return "暴雪";
+            //尘
+            case SkyconUtil.DUST:
+            case SkyconUtil.SAND:
+                return "尘";
+            //风
+            case SkyconUtil.WIND:
+                return "风";
+            default:
+                return "多云";
+        }
+    }
+
+    /**
+     * 获取生活建议
+     *
+     * @param weather
+     * @return
+     */
+    public static String getWeatherAdvice(Weather weather) {
+        String ln = "\r\n";
+        StringBuilder advice = new StringBuilder();
+        List<String> adviceList = new ArrayList<>();
+        //温度提醒
+        if ((weather.result.daily.temperature.get(0).avg < 20)) {
+            adviceList.add("天冷请注意添衣,今日平均温度" + weather.result.daily.temperature.get(0).avg + ln);
+        }
+        //下雨提醒
+        if (weather.result.daily.skycon.get(0).value.equals(SkyconUtil.LIGHT_RAIN) || weather.result.daily.skycon.get(0).value.equals(SkyconUtil.MODERATE_RAIN)) {
+            adviceList.add("今日有雨,出门记得备伞" + ln);
+        }
+        if (weather.result.daily.skycon.get(0).value.equals(SkyconUtil.HEAVY_RAIN) || weather.result.daily.skycon.get(0).value.equals(SkyconUtil.STORM_RAIN)) {
+            adviceList.add("今日雨较大,尽量避免出行" + ln);
+        }
+        if (weather.result.daily.skycon.get(0).value.equals(SkyconUtil.HEAVY_HAZE)) {
+            adviceList.add("今日雾霾较重,出门请记得备口罩" + ln);
+        }
+        //下雪提醒
+        if (weather.result.daily.skycon.get(0).value.equals(SkyconUtil.HEAVY_SNOW) || weather.result.daily.skycon.get(0).value.equals(SkyconUtil.STORM_SNOW)) {
+            adviceList.add("今日雪厚,尽量避免出门" + ln);
+        }
+        //雾提醒
+        if (weather.result.daily.skycon.get(0).value.equals(SkyconUtil.FOG)) {
+            adviceList.add("今日有雾,出行请注意安全" + ln);
+        }
+        //大风提醒
+        if (weather.result.daily.skycon.get(0).value.equals(SkyconUtil.WIND)) {
+            adviceList.add("今日风较大,出行请注意安全" + ln);
+        }
+        //阴天提醒
+        if (weather.result.daily.skycon.get(0).value.equals(SkyconUtil.CLOUDY) || weather.result.daily.skycon.get(0).value.equals(SkyconUtil.PARTLY_CLOUDY_NIGHT) || weather.result.daily.skycon.get(0).value.equals(SkyconUtil.PARTLY_CLOUDY_DAY)) {
+            adviceList.add("今日多云, 出行请做好应对雨天的准备, 适合出门, 祝今天好心情" + ln);
+        }
+        //晴天建议
+        if (weather.result.daily.skycon.get(0).value.equals(SkyconUtil.CLEAR_DAY) || weather.result.daily.skycon.get(0).value.equals(SkyconUtil.CLEAR_NIGHT)) {
+            adviceList.add("今日晴, 出行注意防晒, 适合出门, 祝今天好心情" + ln);
+        }
+        for (int i = 0; i < adviceList.size(); i++) {
+            advice.append((i + 1) + ".  " + adviceList.get(i));
+        }
+        return advice.toString();
     }
 }

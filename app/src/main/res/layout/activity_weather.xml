@@ -27,8 +27,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="32dp"
-            android:src="@drawable/ic_action_add_city" />
+            android:layout_marginRight ="24dp"
+            android:layout_marginBottom="36dp"
+            android:src="@drawable/ic_baseline_add_24" />
 
         <com.jzj.weatherlearn.ui.widget.ViewPagerIndicator
             android:id="@+id/indicator"

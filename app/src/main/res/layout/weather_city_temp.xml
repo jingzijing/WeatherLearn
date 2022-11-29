@@ -14,9 +14,10 @@
 
         <TextView
             android:id="@+id/weather_temp"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:textColor="@android:color/black"
             android:textSize="75sp" />
 
         <TextView
@@ -26,7 +27,18 @@
             android:layout_below="@id/weather_temp"
             android:layout_alignParentLeft="true"
             android:gravity="center_vertical"
+            android:textColor="@android:color/black"
             android:textSize="35sp" />
+
+        <TextView
+            android:id="@+id/weather_skycon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/weather_temp"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical"
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/weather_today"
@@ -35,6 +47,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="48dp"
+            android:textColor="@android:color/black"
             android:textSize="20sp" />
 
     </RelativeLayout>

@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CitySelectActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".ui.CitySelectActivity">
 
     <!--省份和搜索栏-->
     <include layout="@layout/city_search" />
@@ -14,6 +14,6 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/city_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

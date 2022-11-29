@@ -3,14 +3,12 @@ package com.jzj.weatherlearn.ui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.jzj.weatherlearn.R;
 import com.jzj.weatherlearn.global.App;
 import com.jzj.weatherlearn.global.CitySetting;
-import com.jzj.weatherlearn.global.SharedPreferencesManager;
 import com.jzj.weatherlearn.model.City;
 import com.jzj.weatherlearn.tool.DataUtil;
 
@@ -20,7 +18,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private String TAG = MainActivity.class.getName();
-    private SharedPreferences sharedPreferences;
     private DataInitFinishCallback callback = new DataInitFinishCallback() {
         @Override
         public void onFinish() {
@@ -38,10 +35,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        /**
-         * sharedPreferences
-         */
-        sharedPreferences = SharedPreferencesManager.getSharedPreferences(TAG);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -53,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferencesManager.itemDestroy(TAG);
     }
 
     /**
@@ -64,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
          * 没有缓存城市,先选择城市
          */
         Intent intent;
-        List<City> cacheCityList = CitySetting.getInstance().getCacheCities(sharedPreferences);
+        List<City> cacheCityList = CitySetting.getInstance().getCacheCities();
         if (cacheCityList.size() == 0) {
             intent = new Intent(MainActivity.this, CitySelectActivity.class);
             Toast.makeText(this, "<没有缓存的城市,请选择城市>", Toast.LENGTH_SHORT).show();

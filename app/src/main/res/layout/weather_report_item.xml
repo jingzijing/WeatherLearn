@@ -8,7 +8,7 @@
     <TextView
         android:id="@+id/weather_item_date_text"
         style="@style/weather_list_style"
-        android:layout_weight="1" />
+        android:layout_weight="2" />
 
     <ImageView
         android:id="@+id/weather_item_icon"
@@ -17,13 +17,13 @@
         android:layout_weight="1" />
 
     <TextView
-        android:id="@+id/weather_item_min_temprature_text"
+        android:id="@+id/weather_item_skycon"
         style="@style/weather_list_style"
         android:layout_weight="1" />
 
     <TextView
-        android:id="@+id/weather_item_max_temprature_text"
+        android:id="@+id/weather_item_temprature_text"
         style="@style/weather_list_style"
-        android:layout_weight="1" />
+        android:layout_weight="3" />
 
 </LinearLayout>

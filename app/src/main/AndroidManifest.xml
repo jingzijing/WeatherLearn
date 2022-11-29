@@ -16,7 +16,7 @@
         android:largeHeap="false"
         android:roundIcon="@mipmap/ic_weather"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        android:theme="@style/Theme.MyApplication14"
         tools:targetApi="31">
         <!--更新缓存信息服务-->
         <service
@@ -27,20 +27,17 @@
         <activity
             android:name=".ui.WeatherActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light" />
+            android:screenOrientation="portrait" />
         <!--城市列表选择页面-->
         <activity
             android:name=".ui.CitySelectActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light" />
+            android:screenOrientation="portrait" />
         <!--城市管理页面-->
         <activity
             android:name=".ui.CityManageActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light" />
+            android:screenOrientation="portrait" />
         <!--初始引导页-->
         <activity
             android:name=".ui.MainActivity"

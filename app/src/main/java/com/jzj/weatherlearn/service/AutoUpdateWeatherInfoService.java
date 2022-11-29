@@ -4,15 +4,14 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.SystemClock;
 
 import androidx.annotation.NonNull;
 
+import com.jzj.weatherlearn.global.App;
 import com.jzj.weatherlearn.global.CitySetting;
-import com.jzj.weatherlearn.global.SharedPreferencesManager;
 import com.jzj.weatherlearn.model.City;
 import com.jzj.weatherlearn.tool.ApiUtil;
 import com.jzj.weatherlearn.tool.DataUtil;
@@ -29,7 +28,6 @@ import okhttp3.Response;
 public class AutoUpdateWeatherInfoService extends Service {
 
     private String TAG = AutoUpdateWeatherInfoService.class.getName();
-    private SharedPreferences sharedPreferences;
     private final IBinder binder = new UpdateWeatherBinder();
 
     public class UpdateWeatherBinder extends Binder {
@@ -49,7 +47,6 @@ public class AutoUpdateWeatherInfoService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        sharedPreferences = SharedPreferencesManager.getSharedPreferences(TAG);
     }
 
     @Override
@@ -69,14 +66,13 @@ public class AutoUpdateWeatherInfoService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        SharedPreferencesManager.itemDestroy(TAG);
     }
 
     /**
      * 更新天气缓存信息
      */
     private void updateWeather() {
-        List<City> cityList = CitySetting.getInstance().getCacheCities(sharedPreferences);
+        List<City> cityList = CitySetting.getInstance().getCacheCities();
         for (int i = 0; i < cityList.size(); i++) {
             //url拼接
             String url = ApiUtil.WEATHER_API_URL.replace(ApiUtil.REPLACE_STR, cityList.get(i).getLon() + "," + cityList.get(i).getLat());
@@ -101,7 +97,7 @@ public class AutoUpdateWeatherInfoService extends Service {
                                     String responseStr = response.body().string();
                                     //写入缓存
                                     if (responseStr != null) {
-                                        DataUtil.writeSharedPreferences(String.valueOf(cityCode), responseStr, sharedPreferences);
+                                        DataUtil.writeSharedPreferences(String.valueOf(cityCode), responseStr, App.sharedPreferences);
                                     }
                                 }
                             });

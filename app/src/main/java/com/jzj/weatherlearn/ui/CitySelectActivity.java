@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -29,7 +28,6 @@ import android.widget.TextView;
 import com.jzj.weatherlearn.R;
 import com.jzj.weatherlearn.global.App;
 import com.jzj.weatherlearn.global.CitySetting;
-import com.jzj.weatherlearn.global.SharedPreferencesManager;
 import com.jzj.weatherlearn.model.City;
 import com.jzj.weatherlearn.tool.KeyBordUtil;
 import com.jzj.weatherlearn.viewmodel.CityViewModel;
@@ -66,7 +64,6 @@ public class CitySelectActivity extends AppCompatActivity {
     private CityViewModel cityViewModel;
     private int mCityLevel;
     private List<City> mCityList;
-    private SharedPreferences sharedPreferences;
 
     private NiceSpinner cityLevelSpinner;
     private EditText citySearchEdit;
@@ -78,10 +75,6 @@ public class CitySelectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_select);
         /**
-         * sharedPreferences
-         */
-        sharedPreferences = SharedPreferencesManager.getSharedPreferences(TAG);
-        /**
          * actionbar
          */
         ActionBar actionBar = getSupportActionBar();
@@ -90,7 +83,7 @@ public class CitySelectActivity extends AppCompatActivity {
             actionBar.setCustomView(R.layout.activity_city_manage_toolbar_customerview);
             TextView titleText = actionBar.getCustomView().findViewById(R.id.city_manage_toolbar_title);
             titleText.setText(MENU_TITLE);
-            if (CitySetting.getInstance().getCacheCities(sharedPreferences).size() > 0) {
+            if (CitySetting.getInstance().getCacheCities().size() > 0) {
                 actionBar.setHomeButtonEnabled(true);
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setDisplayShowCustomEnabled(true);
@@ -110,7 +103,7 @@ public class CitySelectActivity extends AppCompatActivity {
             public void onItemClick(int position) {
                 //选中城市放入全局cacheCities的第一位
                 City city = mCityList.get(position);
-                CitySetting.getInstance().addCity(city, sharedPreferences);
+                CitySetting.getInstance().addCity(city);
                 Intent intent = new Intent(CitySelectActivity.this, WeatherActivity.class);
                 startActivity(intent);
                 finish();
@@ -188,7 +181,6 @@ public class CitySelectActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferencesManager.itemDestroy(TAG);
     }
 
     @Override

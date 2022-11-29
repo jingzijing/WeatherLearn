@@ -70,16 +70,11 @@ public class ViewPagerIndicator extends View {
         super.onDraw(canvas);
         centreX = getWidth() / 2;
         startY = (getHeight() / 2) - radius;
-        //startSelectedY = getHeight() / 2 - DEFAULT_CIRCLE_SELECTED_RADIUS;
         startSelectedY = getHeight() / 2 - selectRadius;
         endY = startY + (2 * radius);
         if (totalIndex % 2 == 0) {
-            //startX = centreX - (int) (((totalIndex * distance) / 2) - distance + radius + 0.5);
-            //startX = centreX - (int) (1.0 * (totalIndex - 1) / 2 * DEFAULT_CIRCLE_DISTANCE);
             startX = centreX - (int) (1.0 * (totalIndex - 1) / 2 * distance);
         } else {
-            //startX = centreX - (int) (totalIndex / 2) * distance + radius;
-            //startX = centreX - totalIndex / 2 * DEFAULT_CIRCLE_DISTANCE;
             startX = centreX - totalIndex / 2 * distance;
         }
         //抗锯齿
@@ -87,17 +82,11 @@ public class ViewPagerIndicator extends View {
         paint.setColor(unselectedColor);
         int tempX = startX;
         for (int i = 0; i < totalIndex; i++) {
-//            RectF rectF = new RectF(tempX, tempX + (2 * radius), startY, endY);
-//            RectF rectF = new RectF(tempX - DEFAULT_CIRCLE_RADIUS, startY,
-//                    tempX + DEFAULT_CIRCLE_RADIUS, startY + 2 * DEFAULT_CIRCLE_RADIUS);
             RectF rectF = new RectF(tempX - radius, startY,
                     tempX + radius, startY + 2 * radius);
             //选中圆点
             if (i == currentIndex) {
                 paint.setColor(selectedColor);
-//                rectF = new RectF(tempX, tempX + (2 * selectRadius), startY, startY + (2 * selectRadius));
-//                rectF = new RectF(tempX - DEFAULT_CIRCLE_SELECTED_RADIUS, startSelectedY,
-//                        tempX + DEFAULT_CIRCLE_SELECTED_RADIUS, startSelectedY + 2 * DEFAULT_CIRCLE_SELECTED_RADIUS);
                 rectF = new RectF(tempX - selectRadius, startSelectedY,
                         tempX + selectRadius, startSelectedY + 2 * selectRadius);
             }
@@ -119,8 +108,6 @@ public class ViewPagerIndicator extends View {
         int result;
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
-        //int desired = selectRadius * 2 + getPaddingBottom() + getPaddingTop();
-        //int desired = DEFAULT_CIRCLE_SELECTED_RADIUS * 2 + getPaddingBottom() + getPaddingTop();
         int desired = selectRadius * 2 + getPaddingBottom() + getPaddingTop();
         if (specMode == MeasureSpec.EXACTLY) {
             result = Math.max(desired, specSize);
@@ -136,8 +123,6 @@ public class ViewPagerIndicator extends View {
         int result;
         int specMode = MeasureSpec.getMode(measureSpec);
         int specSize = MeasureSpec.getSize(measureSpec);
-        //int desired = (totalIndex - 1) * distance + selectRadius * 2 + getPaddingLeft() + getPaddingRight();
-        //int desired = (totalIndex - 1) * DEFAULT_CIRCLE_DISTANCE + DEFAULT_CIRCLE_SELECTED_RADIUS * 2 + getPaddingLeft() + getPaddingRight();
         int desired = (totalIndex - 1) * distance + selectRadius * 2 + getPaddingLeft() + getPaddingRight();
         if (specMode == MeasureSpec.EXACTLY) {
             result = Math.max(desired, specSize);
@@ -161,10 +146,6 @@ public class ViewPagerIndicator extends View {
         int oldTotalIndex = totalIndex;
         if (total < 1)
             return;
-//        if (total < oldTotalIndex) {
-//            if (currentIndex > total)
-//                currentIndex = total;
-//        }
         if (totalIndex < oldTotalIndex) {
             if (currentIndex == totalIndex)
                 currentIndex = totalIndex - 1;

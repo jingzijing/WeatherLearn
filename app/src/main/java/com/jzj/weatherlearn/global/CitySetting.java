@@ -1,6 +1,5 @@
 package com.jzj.weatherlearn.global;
 
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 
 import com.jzj.weatherlearn.model.City;
@@ -14,6 +13,7 @@ import java.util.List;
  * 提供城市列表信息
  */
 public class CitySetting {
+
     public static final String CACHE_CITY = "cache_city";
     private char separator = '-';
     private static CitySetting instance;
@@ -39,24 +39,24 @@ public class CitySetting {
         return instance;
     }
 
-    public void addCity(City city, SharedPreferences sharedPreferences) {
+    public void addCity(City city) {
         cacheCityList.add(0, city);
         String cacheCityListJson = GsonUtil.formatListToJson(cacheCityList);
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                sharedPreferences.edit().putString(CACHE_CITY, cacheCityListJson).apply();
+                App.sharedPreferences.edit().putString(CACHE_CITY, cacheCityListJson).apply();
             }
         });
     }
 
-    public void deleteCity(City city, SharedPreferences sharedPreferences) {
+    public void deleteCity(City city) {
         cacheCityList.remove(city);
         String cacheCityListJson = GsonUtil.formatListToJson(cacheCityList);
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                sharedPreferences.edit().putString(CACHE_CITY, cacheCityListJson).apply();
+                App.sharedPreferences.edit().putString(CACHE_CITY, cacheCityListJson).apply();
             }
         });
     }
@@ -64,16 +64,20 @@ public class CitySetting {
     /**
      * 缓存城市列表
      */
-    public List<City> getCacheCities(SharedPreferences sharedPreferences) {
+    public List<City> getCacheCities() {
 
         if (cacheCityList.size() == 0) {
-            List list = GsonUtil.formatJsonToList(DataUtil.readSharedPreferences(CACHE_CITY, sharedPreferences));
+            List list = GsonUtil.formatJsonToList(DataUtil.readSharedPreferences(CACHE_CITY, App.sharedPreferences));
             if (list != null) {
                 cacheCityList.addAll(list);
             }
         }
 
         return cacheCityList;
+    }
+
+    public int getCachesCitiesSize() {
+        return cacheCityList.size();
     }
 
 }

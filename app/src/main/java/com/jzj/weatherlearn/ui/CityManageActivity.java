@@ -1,6 +1,5 @@
 package com.jzj.weatherlearn.ui;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -20,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.jzj.weatherlearn.R;
 import com.jzj.weatherlearn.global.App;
 import com.jzj.weatherlearn.global.CitySetting;
-import com.jzj.weatherlearn.global.SharedPreferencesManager;
 import com.jzj.weatherlearn.model.City;
 
 import java.util.List;
@@ -35,16 +33,11 @@ public class CityManageActivity extends AppCompatActivity {
     //城市列表是否数据变动
     private boolean dataChangedFlag = false;
     private Handler mHandler = new Handler();
-    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_manage);
-        /**
-         * sharedPreferences
-         */
-        sharedPreferences = SharedPreferencesManager.getSharedPreferences(TAG);
         /**
          * actionbar
          */
@@ -61,7 +54,7 @@ public class CityManageActivity extends AppCompatActivity {
         /**
          * recyclerview
          */
-        mCityList = CitySetting.getInstance().getCacheCities(sharedPreferences);
+        mCityList = CitySetting.getInstance().getCacheCities();
         recyclerView = findViewById(R.id.city_manage_recyclerview);
         adapter = new CityManageRecyclerViewAdapter();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -76,11 +69,11 @@ public class CityManageActivity extends AppCompatActivity {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                if (CitySetting.getInstance().getCacheCities(sharedPreferences).size() > 1) {
+                if (CitySetting.getInstance().getCacheCities().size() > 1) {
                     int position = viewHolder.getAdapterPosition();
                     City city = mCityList.get(position);
-                    CitySetting.getInstance().deleteCity(city, sharedPreferences);
-                    mCityList = CitySetting.getInstance().getCacheCities(sharedPreferences);
+                    CitySetting.getInstance().deleteCity(city);
+                    mCityList = CitySetting.getInstance().getCacheCities();
                     adapter.notifyItemRemoved(position);
 
                     if (!dataChangedFlag)
@@ -95,7 +88,6 @@ public class CityManageActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SharedPreferencesManager.itemDestroy(TAG);
     }
 
     @Override

@@ -3,9 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/WeatherLearn/app/src/main/res/drawable-anydpi/ic_action_add_city.xml" value="0.159" />
+        <entry key="..\:/WeatherLearn/app/src/main/res/drawable-anydpi/ic_action_city_manage.xml" value="0.159" />
         <entry key="..\:/WeatherLearn/app/src/main/res/drawable-anydpi/ic_action_name.xml" value="0.1495" />
+        <entry key="..\:/WeatherLearn/app/src/main/res/drawable-anydpi/ic_action_refresh.xml" value="0.159" />
+        <entry key="..\:/WeatherLearn/app/src/main/res/drawable-anydpi/ic_cloud.xml" value="0.159" />
         <entry key="..\:/WeatherLearn/app/src/main/res/drawable/ic_clear_day.xml" value="0.1765" />
         <entry key="..\:/WeatherLearn/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1905" />
+        <entry key="..\:/WeatherLearn/app/src/main/res/drawable/ic_wind.xml" value="0.1765" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/activity_city_manage.xml" value="0.30027173913043476" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/activity_city_manage_item.xml" value="0.30027173913043476" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/activity_city_manage_toolbar_customerview.xml" value="0.17806484295845998" />
