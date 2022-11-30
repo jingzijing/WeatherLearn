@@ -10,6 +10,16 @@
     <!--省份和搜索栏-->
     <include layout="@layout/city_search" />
 
+    <!--定位-->
+    <Button
+        android:id="@+id/location_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="定位获取当前城市📍" />
+
+
     <!--城市列表-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/city_container"

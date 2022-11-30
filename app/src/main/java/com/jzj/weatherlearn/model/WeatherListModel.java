@@ -1,7 +1,7 @@
 package com.jzj.weatherlearn.model;
 
-import com.jzj.weatherlearn.model.gson.Skycon;
-import com.jzj.weatherlearn.model.gson.Temperature;
+import com.jzj.weatherlearn.model.gson_weather.Skycon;
+import com.jzj.weatherlearn.model.gson_weather.Temperature;
 
 public class WeatherListModel {
 

@@ -46,6 +46,7 @@ public class WeatherActivity extends AppCompatActivity {
 
     private String TAG;
     public static final int WEATHER_BG_UPDATE_MESSAGE = 0;
+    public static final int WEATHER_ACTIVITY_FINISH = 1;
 
     private int mCitySize;
     private WeatherBg weatherBg;
@@ -73,6 +74,8 @@ public class WeatherActivity extends AppCompatActivity {
                         weatherBg.changeWeather(weatherType);
                     }
                     break;
+                case WEATHER_ACTIVITY_FINISH:
+                    finish();
             }
         }
     }
@@ -204,7 +207,6 @@ public class WeatherActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        clearFragments();
     }
 
     @Override
@@ -224,6 +226,7 @@ public class WeatherActivity extends AppCompatActivity {
             case R.id.city_refresh:
                 WeatherFragment fragment = (WeatherFragment) mFragments.get(viewPage.getCurrentItem());
                 fragment.sendMessage(null, WeatherFragment.WEATHER_ON_NETWORD_REQUEST);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

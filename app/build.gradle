@@ -54,4 +54,7 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
     //nice spinner
     implementation 'com.github.arcadefire:nice-spinner:1.4.4'
+    //XXPermission
+    //github地址: https://github.com/getActivity/XXPermissions
+    implementation 'com.hjq:xxpermissions:5.2'
 }

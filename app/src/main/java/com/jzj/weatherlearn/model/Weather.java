@@ -1,11 +1,9 @@
 package com.jzj.weatherlearn.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.jzj.weatherlearn.model.City;
-import com.jzj.weatherlearn.model.WeatherListModel;
-import com.jzj.weatherlearn.model.gson.Result;
-import com.jzj.weatherlearn.model.gson.Skycon;
-import com.jzj.weatherlearn.model.gson.Temperature;
+import com.jzj.weatherlearn.model.gson_weather.Result;
+import com.jzj.weatherlearn.model.gson_weather.Skycon;
+import com.jzj.weatherlearn.model.gson_weather.Temperature;
 
 import java.util.ArrayList;
 import java.util.List;

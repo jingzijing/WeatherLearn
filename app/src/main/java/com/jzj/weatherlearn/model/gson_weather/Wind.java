@@ -1,4 +1,4 @@
-package com.jzj.weatherlearn.model.gson;
+package com.jzj.weatherlearn.model.gson_weather;
 
 /**
  * wind 全天地表风速

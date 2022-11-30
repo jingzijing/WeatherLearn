@@ -1,6 +1,4 @@
-package com.jzj.weatherlearn.model.gson;
-
-import com.google.gson.annotations.SerializedName;
+package com.jzj.weatherlearn.model.gson_weather;
 
 /**
  * 日出日落时间，当地时区的时刻

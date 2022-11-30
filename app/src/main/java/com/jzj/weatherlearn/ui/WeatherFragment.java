@@ -137,7 +137,7 @@ public class WeatherFragment extends Fragment {
         /**
          * weather temp透明度及字体颜色为白
          */
-        weatherTempCardview.getBackground().setAlpha(145);
+        weatherTempCardview.getBackground().setAlpha(60);
         //scrollview初始化不可见,直至有数据出现
         scrollView.setVisibility(ScrollView.INVISIBLE);
     }
@@ -206,8 +206,7 @@ public class WeatherFragment extends Fragment {
          */
         if (!childViewAlphaSetFlag) {
             childViewAlphaSetFlag = true;
-            //view.setAlpha方法，参数范围0-1
-            //setScrollChildAlpha((float) (0.75));
+            //setScrollChildAlpha(0);
         }
         /**
          * 当天温度
@@ -237,11 +236,14 @@ public class WeatherFragment extends Fragment {
     /**
      * 设置内容透明度，除了温度、城市信息固定透明度，其他子view的透明度都由参数alpha决定
      */
-    private void setScrollChildAlpha(Float alpha) {
+    private void setScrollChildAlpha(int alpha) {
         LinearLayout linearLayout = (LinearLayout) scrollView.getChildAt(0);
         int childCount = linearLayout.getChildCount();
         for (int i = 1; i < childCount; i++) {
-            linearLayout.getChildAt(i).setAlpha(alpha);
+            View view = linearLayout.getChildAt(i);
+            if (view instanceof ViewGroup) {
+                view.getBackground().setAlpha(0);
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package com.jzj.weatherlearn.model.gson;
+package com.jzj.weatherlearn.model.gson_weather;
 
 /**
  * temperature  全天地表 2 米气温

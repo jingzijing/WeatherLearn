@@ -3,28 +3,42 @@ package com.jzj.weatherlearn.ui;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.hjq.permissions.OnPermission;
+import com.hjq.permissions.Permission;
+import com.hjq.permissions.XXPermissions;
 import com.jzj.weatherlearn.R;
 import com.jzj.weatherlearn.global.App;
 import com.jzj.weatherlearn.global.CitySetting;
@@ -64,16 +78,20 @@ public class CitySelectActivity extends AppCompatActivity {
     private CityViewModel cityViewModel;
     private int mCityLevel;
     private List<City> mCityList;
+    private LocationManager mLocationManager;
+    private Context mContext;
 
     private NiceSpinner cityLevelSpinner;
     private EditText citySearchEdit;
     private RecyclerView cityContainer;
     private CitySelectRecyclerViewAdapter adapter;
+    private Button locationBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_select);
+        mContext = this;
         /**
          * actionbar
          */
@@ -83,7 +101,7 @@ public class CitySelectActivity extends AppCompatActivity {
             actionBar.setCustomView(R.layout.activity_city_manage_toolbar_customerview);
             TextView titleText = actionBar.getCustomView().findViewById(R.id.city_manage_toolbar_title);
             titleText.setText(MENU_TITLE);
-            if (CitySetting.getInstance().getCacheCities().size() > 0) {
+            if (CitySetting.getInstance().getCachesCitiesSize() > 0) {
                 actionBar.setHomeButtonEnabled(true);
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 actionBar.setDisplayShowCustomEnabled(true);
@@ -103,10 +121,7 @@ public class CitySelectActivity extends AppCompatActivity {
             public void onItemClick(int position) {
                 //选中城市放入全局cacheCities的第一位
                 City city = mCityList.get(position);
-                CitySetting.getInstance().addCity(city);
-                Intent intent = new Intent(CitySelectActivity.this, WeatherActivity.class);
-                startActivity(intent);
-                finish();
+                addCityAndJump(city);
             }
         });
         //绑定viewModel
@@ -176,11 +191,56 @@ public class CitySelectActivity extends AppCompatActivity {
 
             }
         });
-    }
+        /**
+         * 定位button
+         */
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationBtn = findViewById(R.id.location_btn);
+        locationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //关闭edittext软键盘
+                KeyBordUtil.closeKeyBordUtil(citySearchEdit);
+                //授权后定位
+                if (requestPermission()) {
+                    try {
+                        //检查定位功能是否打开
+                        if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                            displayToast("请确保定位功能和网络功能已打开");
+                            return;
+                        }
+                        locationBtn.setText("定位中...");
+                        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, new LocationListener() {
+                            @Override
+                            public void onLocationChanged(@NonNull Location location) {
+                                mLocationManager.removeUpdates(this);
+                                //viewmodel获取城市名并回调
+                                cityViewModel.getCityByLatAndLon(location, new CityViewModel.OnNetworkResponseListener() {
+                                    @Override
+                                    public void onResponse(City city) {
+                                        addCityAndJump(city);
+                                    }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+                                    @Override
+                                    public void onFailure() {
+                                        displayToast("定位失败,请手动选择城市");
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                locationBtn.setText("重新定位");
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        });
     }
 
     @Override
@@ -205,6 +265,73 @@ public class CitySelectActivity extends AppCompatActivity {
         } else {
             cityViewModel.getCityLiveDataWithLevel(cityLevel);
         }
+    }
+
+    /**
+     * 查看权限,如果没有则获取
+     */
+    private boolean requestPermission() {
+        boolean result = false;
+        if (XXPermissions.isHasPermission(mContext, Permission.ACCESS_COARSE_LOCATION) && XXPermissions.isHasPermission(mContext, Permission.ACCESS_FINE_LOCATION)) {
+            result = true;
+        } else {
+            XXPermissions.with((Activity) mContext)
+                    .permission(Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_FINE_LOCATION)
+                    .request(new OnPermission() {
+                        @Override
+                        public void hasPermission(List<String> granted, boolean isAll) {
+
+                        }
+
+                        @Override
+                        public void noPermission(List<String> denied, boolean quick) {
+                            if (quick) {
+                                displayToast("请手动打开定位权限");
+                                XXPermissions.gotoPermissionSettings(mContext);
+                            } else {
+                                displayToast("定位功能需要授权");
+                            }
+                        }
+                    });
+            if (XXPermissions.isHasPermission(mContext, Permission.ACCESS_COARSE_LOCATION) && XXPermissions.isHasPermission(mContext, Permission.ACCESS_FINE_LOCATION)) {
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * toast
+     */
+    private void displayToast(String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * 添加city并跳转
+     */
+    private void addCityAndJump(City city) {
+        boolean canAdd = true;
+        List<City> cityList = CitySetting.getInstance().getCacheCities();
+        for (City c : cityList) {
+            if (c.getCityCode() == city.getCityCode()) {
+                canAdd = false;
+                break;
+            }
+        }
+        if (canAdd) {
+            CitySetting.getInstance().addCity(city);
+        } else {
+            displayToast("已存在" + city.getCityName() + "的天气信息");
+        }
+        Intent intent = new Intent(CitySelectActivity.this, WeatherActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     /**

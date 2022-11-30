@@ -1,4 +1,4 @@
-package com.jzj.weatherlearn.model.gson;
+package com.jzj.weatherlearn.model.gson_weather;
 
 import java.util.List;
 

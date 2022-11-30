@@ -1,6 +1,4 @@
-package com.jzj.weatherlearn.model.gson;
-
-import com.google.gson.annotations.SerializedName;
+package com.jzj.weatherlearn.model.gson_weather;
 
 import java.util.List;
 

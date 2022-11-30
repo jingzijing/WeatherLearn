@@ -51,12 +51,14 @@ public class CitySetting {
     }
 
     public void deleteCity(City city) {
+        int code = city.getCityCode();
         cacheCityList.remove(city);
         String cacheCityListJson = GsonUtil.formatListToJson(cacheCityList);
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 App.sharedPreferences.edit().putString(CACHE_CITY, cacheCityListJson).apply();
+                App.sharedPreferences.edit().remove(String.valueOf(code)).apply();
             }
         });
     }
@@ -74,6 +76,14 @@ public class CitySetting {
         }
 
         return cacheCityList;
+    }
+
+    /**
+     * 清空缓存
+     */
+    public void removeAllCache() {
+        cacheCityList.clear();
+        App.sharedPreferences.edit().clear();
     }
 
     public int getCachesCitiesSize() {

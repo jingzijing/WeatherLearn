@@ -1,4 +1,4 @@
-package com.jzj.weatherlearn.model.gson;
+package com.jzj.weatherlearn.model.gson_weather;
 
 /**
  * dswrf    向下短波辐射通量(W/M2)

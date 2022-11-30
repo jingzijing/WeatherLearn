@@ -3,6 +3,7 @@ package com.jzj.weatherlearn.tool;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.jzj.weatherlearn.model.City;
+import com.jzj.weatherlearn.model.CityInfo;
 import com.jzj.weatherlearn.model.Weather;
 
 import java.util.List;
@@ -59,6 +60,21 @@ public class GsonUtil {
             gson = null;
         }
         return weather;
+    }
+
+    /**
+     * 城市信息数据处理
+     * @param json
+     * @return
+     */
+    public static CityInfo handlerCityInfoJson(String json) {
+        CityInfo cityInfo = null;
+        if (json != null && (!"".equals(json))) {
+            Gson gson = new Gson();
+            cityInfo = gson.fromJson(json, CityInfo.class);
+            gson = null;
+        }
+        return cityInfo;
     }
 
 }
