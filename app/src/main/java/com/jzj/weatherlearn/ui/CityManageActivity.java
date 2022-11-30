@@ -1,12 +1,17 @@
 package com.jzj.weatherlearn.ui;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,6 +38,7 @@ public class CityManageActivity extends AppCompatActivity {
     //城市列表是否数据变动
     private boolean dataChangedFlag = false;
     private Handler mHandler = new Handler();
+    private Context mContext = this;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,12 +97,21 @@ public class CityManageActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_manager_city, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             //返回键
             case android.R.id.home:
                 finish();
                 return true;
+            //清空城市缓存
+            case R.id.city_remove_all:
+                requestRemoveAllCityCache();
             default:
                 break;
         }
@@ -131,6 +146,31 @@ public class CityManageActivity extends AppCompatActivity {
             super(itemView);
             cityName = itemView.findViewById(R.id.city_manage_city_name);
         }
+    }
+
+    /**
+     * 确认是否删除所有城市缓存
+     */
+    private void requestRemoveAllCityCache() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(mContext)
+                        .setTitle("确认删除所有城市缓存")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                CitySetting.getInstance().removeAllCache();
+                                mCityList.clear();
+                                adapter.notifyDataSetChanged();
+                                Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
+            }
+        });
     }
 
 

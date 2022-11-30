@@ -210,6 +210,7 @@ public class CitySelectActivity extends AppCompatActivity {
                             return;
                         }
                         locationBtn.setText("定位中...");
+                        locationBtn.setEnabled(false);
                         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, new LocationListener() {
                             @Override
                             public void onLocationChanged(@NonNull Location location) {
@@ -228,6 +229,7 @@ public class CitySelectActivity extends AppCompatActivity {
                                             @Override
                                             public void run() {
                                                 locationBtn.setText("重新定位");
+                                                locationBtn.setEnabled(true);
                                             }
                                         });
                                     }

@@ -83,7 +83,7 @@ public class CitySetting {
      */
     public void removeAllCache() {
         cacheCityList.clear();
-        App.sharedPreferences.edit().clear();
+        App.sharedPreferences.edit().clear().apply();
     }
 
     public int getCachesCitiesSize() {

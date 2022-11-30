@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jzj.weatherlearn.R;
@@ -189,9 +190,11 @@ public class WeatherActivity extends AppCompatActivity {
          */
         int size = CitySetting.getInstance().getCachesCitiesSize();
         if (size != mCitySize) {
-            if (CitySetting.getInstance().getCachesCitiesSize() == 0) {
+            if (size == 0) {
+                Toast.makeText(this, "请重新选择城市", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(WeatherActivity.this, CitySelectActivity.class);
                 startActivity(intent);
+                finish();
             } else {
                 clearFragments();
                 loadCityDataFragments();

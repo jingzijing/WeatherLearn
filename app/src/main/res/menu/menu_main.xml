@@ -2,12 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--    <item-->
-<!--        android:id="@+id/city_settings"-->
-<!--        android:icon="@drawable/ic_action_settings"-->
-<!--        android:title="设置"-->
-<!--        app:showAsAction="always" />-->
-
     <item
         android:id="@+id/city_refresh"
         android:icon="@drawable/ic_action_refresh"

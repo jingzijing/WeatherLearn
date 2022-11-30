@@ -161,4 +161,12 @@ public class WeatherAndCityViewModel extends AndroidViewModel {
         livedata.postValue(models);
     }
 
+    /**
+     * 清空数据
+     */
+    public void clearLivedata() {
+        livedata.setValue(null);
+        livedata = null;
+    }
+
 }
