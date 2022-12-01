@@ -8,18 +8,13 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -80,20 +75,6 @@ public class WeatherActivity extends AppCompatActivity {
             }
         }
     }
-
-    ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            AutoUpdateWeatherInfoService autoUpdateWeatherInfoService = ((AutoUpdateWeatherInfoService.UpdateWeatherBinder) service).getService();
-            Intent intent = new Intent();
-            //绑定成功后启动服务
-            autoUpdateWeatherInfoService.onStartCommand(intent, 0, 0);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-        }
-    };
 
     private ActivityCallback weatherBgCallback = new ActivityCallback() {
         @Override
@@ -175,11 +156,6 @@ public class WeatherActivity extends AppCompatActivity {
          */
         weatherBg = findViewById(R.id.weather_bg);
         weatherBg.changeWeather(WeatherUtil.WeatherType.sunny);
-        /**
-         * 绑定自动更新天气缓存服务 8小时更新一次缓存
-         */
-        Intent intent = new Intent(WeatherActivity.this, AutoUpdateWeatherInfoService.class);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override

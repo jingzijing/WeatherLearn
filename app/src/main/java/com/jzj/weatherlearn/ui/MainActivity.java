@@ -10,6 +10,7 @@ import com.jzj.weatherlearn.R;
 import com.jzj.weatherlearn.global.App;
 import com.jzj.weatherlearn.global.CitySetting;
 import com.jzj.weatherlearn.model.City;
+import com.jzj.weatherlearn.service.AutoUpdateWeatherInfoService;
 import com.jzj.weatherlearn.tool.DataUtil;
 
 import java.io.IOException;
@@ -24,6 +25,12 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    /**
+                     * 启动后台服务 2小时更新一次缓存
+                     */
+                    Intent intent = new Intent(MainActivity.this, AutoUpdateWeatherInfoService.class);
+                    startService(intent);
+
                     jump();
                     finish();
                 }
