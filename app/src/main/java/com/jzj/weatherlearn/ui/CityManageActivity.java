@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +40,7 @@ public class CityManageActivity extends AppCompatActivity {
     private boolean dataChangedFlag = false;
     private Handler mHandler = new Handler();
     private Context mContext = this;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,10 +49,12 @@ public class CityManageActivity extends AppCompatActivity {
         /**
          * actionbar
          */
+        toolbar = findViewById(R.id.city_manager_toolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            actionBar.setCustomView(R.layout.activity_city_manage_toolbar_customerview);
+            actionBar.setCustomView(R.layout.city_manage_toolbar_customerview);
             TextView titleText = actionBar.getCustomView().findViewById(R.id.city_manage_toolbar_title);
             titleText.setText(MENU_TITLE);
             actionBar.setHomeButtonEnabled(true);
@@ -122,7 +126,7 @@ public class CityManageActivity extends AppCompatActivity {
         @NonNull
         @Override
         public CityManageRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(App.context).inflate(R.layout.activity_city_manage_item, parent, false);
+            View itemView = LayoutInflater.from(App.context).inflate(R.layout.city_manage_recyclerview_item, parent, false);
             return new CityManageRecyclerViewHolder(itemView);
         }
 

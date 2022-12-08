@@ -2,6 +2,7 @@ package com.jzj.weatherlearn.ui;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
@@ -15,15 +16,17 @@ import android.os.Message;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.jzj.weatherlearn.R;
 import com.jzj.weatherlearn.global.CitySetting;
 import com.jzj.weatherlearn.model.City;
 import com.jzj.weatherlearn.model.Weather;
 import com.jzj.weatherlearn.model.WeatherAndCityModel;
-import com.jzj.weatherlearn.service.AutoUpdateWeatherInfoService;
 import com.jzj.weatherlearn.tool.SkyconUtil;
 import com.jzj.weatherlearn.ui.adapter.ViewPagerFragmentStateAdapter;
 import com.jzj.weatherlearn.ui.widget.ViewPagerIndicator;
@@ -40,19 +43,26 @@ import java.util.List;
  */
 public class WeatherActivity extends AppCompatActivity {
 
-    private String TAG;
+    private String TAG = "WeatherActivity";
     public static final int WEATHER_BG_UPDATE_MESSAGE = 0;
     public static final int WEATHER_ACTIVITY_FINISH = 1;
 
-    private int mCitySize;
+    private int mCitySize = 0;
+    private String mTitle;
     private WeatherBg weatherBg;
-    private List<WeatherFragment> mFragments;
+    private List<WeatherFragment> mFragments = new ArrayList<>();
     private ViewPagerFragmentStateAdapter mAdapter;
     private WeatherAndCityViewModel viewModel;
 
     private FloatingActionButton addCityBtn;
     private ViewPager2 viewPage;
     private ViewPagerIndicator indicator;
+    private Toolbar toolbar;
+    private TextView weatherTemp;
+    private TextView weatherCityName;
+    private TextView weatherSkycon;
+    private TextView weatherToday;
+    private AppBarLayout appBarLayout;
 
     private Handler mHandler = new WeatherActivityHandler();
 
@@ -76,45 +86,69 @@ public class WeatherActivity extends AppCompatActivity {
         }
     }
 
-    private ActivityCallback weatherBgCallback = new ActivityCallback() {
-        @Override
-        public void handleWeatherBg(Weather weather, int messageWhat) {
-            Message message = Message.obtain();
-            message.what = messageWhat;
-            message.obj = weather;
-            mHandler.sendMessage(message);
-        }
-
-        @Override
-        public void loadWeatherInfo(int cityCode) {
-            List<City> cityList = CitySetting.getInstance().getCacheCities();
-            for (int i = 0; i < cityList.size(); i++) {
-                if (cityList.get(i).getCityCode() == cityCode) {
-                    viewModel.getWeatherInfo(cityList.get(i));
-                }
-            }
-        }
-
-        @Override
-        public void loadWeatherInfoWithNetwork(int cityCode) {
-            List<City> cityList = CitySetting.getInstance().getCacheCities();
-            for (int i = 0; i < cityList.size(); i++) {
-                if (cityList.get(i).getCityCode() == cityCode) {
-                    viewModel.getWeatherInfoFromNetwork(cityList.get(i));
-                }
-            }
-        }
-
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
+        //隐藏状态栏
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        toolbar = findViewById(R.id.weather_show_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(null);
+
+        weatherTemp = findViewById(R.id.weather_temp);
+        weatherCityName = findViewById(R.id.weather_city_name);
+        weatherToday = findViewById(R.id.weather_today);
+        weatherSkycon = findViewById(R.id.weather_skycon);
+        weatherTemp.setText("温度");
+        weatherCityName.setText("城市名");
+        weatherToday.setText("今日");
+        weatherSkycon.setText("天气");
         /**
-         * 参数初始化
+         * viewmodel
          */
-        init();
+        viewModel = new ViewModelProvider(this).get(WeatherAndCityViewModel.class);
+        viewModel.getLiveData().observe(this, new Observer<List<WeatherAndCityModel>>() {
+            @Override
+            public void onChanged(List<WeatherAndCityModel> weatherAndCityModels) {
+                if (weatherAndCityModels == null || viewPage.getCurrentItem() < 0) {
+                    return;
+                }
+                WeatherFragment fragment = mFragments.get(viewPage.getCurrentItem());
+                WeatherAndCityModel model = null;
+                for (int i = 0; i < weatherAndCityModels.size(); i++) {
+                    if (weatherAndCityModels.get(i).getCity().getCityCode() == fragment.getCityCode()) {
+                        model = weatherAndCityModels.get(i);
+                        break;
+                    }
+                }
+                if (model != null && model.getWeather() != null) {
+                    sendMessage(model.getWeather(), WEATHER_BG_UPDATE_MESSAGE);
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("weather", model.getWeather());
+                    map.put("city", model.getCity());
+                    fragment.sendMessage(map, WeatherFragment.WEATHER_ON_RESPONSE);
+                    //更新城市名
+                    String tempFrom = String.valueOf(model.getWeather().result.daily.temperature.get(0).avg);
+                    String temp = tempFrom.substring(0, tempFrom.indexOf(".") + 2) + "℃";
+                    String cityName = model.getCity().getCityName();
+                    String today = model.getWeather().result.daily.temperature.get(0).date.substring(5, 10) + " 刷新";
+                    String skycon = SkyconUtil.getSkyConName(model.getWeather().result.daily.skycon.get(0).value);
+                    String sunRiseTime = model.getWeather().result.daily.astro.get(0).sunrise.time;
+                    String sunSetTime = model.getWeather().result.daily.astro.get(0).sunset.time;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            weatherTemp.setText(temp);
+                            weatherCityName.setText(cityName);
+                            weatherToday.setText(today);
+                            weatherSkycon.setText(skycon);
+                            mTitle = cityName;
+                        }
+                    });
+                }
+            }
+        });
         /**
          * 加载fragments
          */
@@ -156,6 +190,24 @@ public class WeatherActivity extends AppCompatActivity {
          */
         weatherBg = findViewById(R.id.weather_bg);
         weatherBg.changeWeather(WeatherUtil.WeatherType.sunny);
+        /**
+         * AppBarLayout
+         */
+        appBarLayout = findViewById(R.id.appbar_layout);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.BaseOnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                //垂直方向偏移量
+                int offset = Math.abs(verticalOffset);
+                //最大实际偏移量
+                int scrollRange = appBarLayout.getTotalScrollRange();
+                if (scrollRange - offset <= 50) {
+                    getSupportActionBar().setTitle(mTitle);
+                } else {
+                    getSupportActionBar().setTitle(null);
+                }
+            }
+        });
     }
 
     @Override
@@ -211,40 +263,6 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     /**
-     * 初始化
-     */
-    private void init() {
-        TAG = "WeatherActivity";
-        mCitySize = 0;
-        mFragments = new ArrayList<>();
-
-        viewModel = new ViewModelProvider(this).get(WeatherAndCityViewModel.class);
-        viewModel.getLiveData().observe(this, new Observer<List<WeatherAndCityModel>>() {
-            @Override
-            public void onChanged(List<WeatherAndCityModel> weatherAndCityModels) {
-                if (weatherAndCityModels == null) {
-                    return;
-                }
-                WeatherFragment fragment = mFragments.get(viewPage.getCurrentItem());
-                WeatherAndCityModel model = null;
-                for (int i = 0; i < weatherAndCityModels.size(); i++) {
-                    if (weatherAndCityModels.get(i).getCity().getCityCode() == fragment.getCityCode()) {
-                        model = weatherAndCityModels.get(i);
-                        break;
-                    }
-                }
-                if (model != null && model.getWeather() != null) {
-                    sendMessage(model.getWeather(), WEATHER_BG_UPDATE_MESSAGE);
-                    HashMap<String, Object> map = new HashMap<>();
-                    map.put("weather", model.getWeather());
-                    map.put("city", model.getCity());
-                    fragment.sendMessage(map, WeatherFragment.WEATHER_ON_RESPONSE);
-                }
-            }
-        });
-    }
-
-    /**
      * 加载fragments
      */
     private void loadCityDataFragments() {
@@ -255,7 +273,7 @@ public class WeatherActivity extends AppCompatActivity {
             City city = CitySetting.getInstance().getCacheCities().get(i);
             models.add(new WeatherAndCityModel(city));
             int cityCode = city.getCityCode();
-            mFragments.add(WeatherFragment.newInstance(cityCode, weatherBgCallback));
+            mFragments.add(WeatherFragment.newInstance(cityCode));
         }
         viewModel.getLiveData().setValue(models);
     }

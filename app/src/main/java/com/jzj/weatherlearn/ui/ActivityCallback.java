@@ -14,15 +14,4 @@ public interface ActivityCallback {
      */
     void handleWeatherBg(Weather weather, int messageWhat);
 
-    /**
-     * 加载weather数据
-     * @param index
-     */
-    void loadWeatherInfo(int index);
-
-    /**
-     * 刷新weather数据
-     */
-    void loadWeatherInfoWithNetwork(int index);
-
 }

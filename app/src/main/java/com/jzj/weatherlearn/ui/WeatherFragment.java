@@ -8,15 +8,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,7 @@ import com.jzj.weatherlearn.model.City;
 import com.jzj.weatherlearn.model.WeatherListModel;
 import com.jzj.weatherlearn.model.Weather;
 import com.jzj.weatherlearn.tool.SkyconUtil;
+import com.jzj.weatherlearn.viewmodel.WeatherAndCityViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,35 +45,26 @@ public class WeatherFragment extends Fragment {
     public static final int WEATHER_ON_RESPONSE = 0;
     public static final int WEATHER_ON_NETWORD_REQUEST = 1;
 
-    private String TAG;
+    private String TAG = "WeatherFragment";
+    private WeatherAndCityViewModel viewModel;
     private int mCityCode;
     //butterknife
     private Unbinder mUnbinder;
     //仅设置1次ui透明度的标识
-    private boolean childViewAlphaSetFlag;
+    private boolean childViewAlphaSetFlag = false;
     //控件绑定
-    @BindView(R.id.weather_temp_cardview)
-    CardView weatherTempCardview;
     @BindView(R.id.weather_advice_container)
     CardView weatherAdviceCardview;
-    @BindView(R.id.weather_temp)
-    TextView weatherTemp;
-    @BindView(R.id.weather_city_name)
-    TextView weatherCityName;
-    @BindView(R.id.weather_today)
-    TextView weatherToday;
-    @BindView(R.id.weather_skycon)
-    TextView weatherSkycon;
     @BindView(R.id.weather_advice)
     TextView weatherAdvice;
-    @BindView(R.id.scrollView)
-    ScrollView scrollView;
     @BindView(R.id.weather_report_container)
     RecyclerView recyclerView;
-    private List<WeatherListModel> mWeatherList;
+    @BindView(R.id.sunrise_text_view)
+    TextView sunriseTextView;
+    @BindView(R.id.sunset_text_view)
+    TextView sunsetTextView;
+    private List<WeatherListModel> mWeatherList = new ArrayList<>();
     private WeatherReportItemListAdapter mWeatherReportItemListAdapter;
-    //接口由 WeatherActivity提供
-    private ActivityCallback mWeatherActivityWeatherBgCallBack;
     private boolean refreshFlag;
     private Handler mHandler = new WeatherFragmentHandler();
 
@@ -99,9 +92,9 @@ public class WeatherFragment extends Fragment {
                  * 刷新天气信息
                  */
                 case WEATHER_ON_NETWORD_REQUEST:
-                    if (mWeatherActivityWeatherBgCallBack != null) {
-                        mWeatherActivityWeatherBgCallBack.loadWeatherInfoWithNetwork(mCityCode);
+                    if (!refreshFlag) {
                         refreshFlag = true;
+                        viewModel.getWeatherInfoFromNetwork(viewModel.findCityByCode(mCityCode));
                     }
                     break;
             }
@@ -111,35 +104,25 @@ public class WeatherFragment extends Fragment {
     /**
      * 构造函数
      */
-    public WeatherFragment(int mCityCode, ActivityCallback callback) {
+    public WeatherFragment(int mCityCode) {
         this.mCityCode = mCityCode;
-        this.mWeatherActivityWeatherBgCallBack = callback;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        viewModel = new ViewModelProvider(getActivity()).get(WeatherAndCityViewModel.class);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_weather_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_weather, container, false);
         /**
          * butterknife初始化
          */
         mUnbinder = ButterKnife.bind(this, view);
-        /**
-         * 初始化
-         */
-        init();
         return view;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        /**
-         * weather temp透明度及字体颜色为白
-         */
-        weatherTempCardview.getBackground().setAlpha(60);
-        //scrollview初始化不可见,直至有数据出现
-        scrollView.setVisibility(ScrollView.INVISIBLE);
     }
 
     @Override
@@ -156,7 +139,7 @@ public class WeatherFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mWeatherActivityWeatherBgCallBack.loadWeatherInfo(mCityCode);
+        viewModel.getWeatherInfo(viewModel.findCityByCode(mCityCode));
     }
 
     @Override
@@ -166,22 +149,10 @@ public class WeatherFragment extends Fragment {
     }
 
     /**
-     * 初始化
-     */
-    private void init() {
-        childViewAlphaSetFlag = false;
-        TAG = "WeatherFragment";
-        mWeatherList = new ArrayList<>();
-    }
-
-    /**
      * 提供给外部创建fragment
      */
-    public static WeatherFragment newInstance(int cityIndex, ActivityCallback callback) {
-        if (cityIndex < 0) {
-            return null;
-        }
-        return new WeatherFragment(cityIndex, callback);
+    public static WeatherFragment newInstance(int cityCode) {
+        return new WeatherFragment(cityCode);
     }
 
     /**
@@ -198,25 +169,6 @@ public class WeatherFragment extends Fragment {
      * 更新数据到控件中
      */
     private void updateToView(Weather weather, City city) {
-        if (weather != null) {
-            scrollView.setVisibility(ScrollView.VISIBLE);
-        }
-        /**
-         * 设置透明度
-         */
-        if (!childViewAlphaSetFlag) {
-            childViewAlphaSetFlag = true;
-            //setScrollChildAlpha(0);
-        }
-        /**
-         * 当天温度
-         */
-        String avgTempFrom = String.valueOf(weather.result.daily.temperature.get(0).avg);
-        String avgTemp = avgTempFrom.substring(0, avgTempFrom.indexOf(".") + 2) + "℃";
-        weatherTemp.setText(avgTemp);
-        weatherCityName.setText(city.getCityName());
-        weatherToday.setText(weather.result.daily.temperature.get(0).date.substring(5, 10));
-        weatherSkycon.setText(SkyconUtil.getSkyConName(weather.result.daily.skycon.get(0).value));
         /**
          *  更新天气预报列表数据
          */
@@ -231,20 +183,13 @@ public class WeatherFragment extends Fragment {
         } else {
             weatherAdvice.setText(advice);
         }
-    }
-
-    /**
-     * 设置内容透明度，除了温度、城市信息固定透明度，其他子view的透明度都由参数alpha决定
-     */
-    private void setScrollChildAlpha(int alpha) {
-        LinearLayout linearLayout = (LinearLayout) scrollView.getChildAt(0);
-        int childCount = linearLayout.getChildCount();
-        for (int i = 1; i < childCount; i++) {
-            View view = linearLayout.getChildAt(i);
-            if (view instanceof ViewGroup) {
-                view.getBackground().setAlpha(0);
-            }
-        }
+        /**
+         * 日出日落
+         */
+        String sunrise = weather.result.daily.astro.get(0).sunrise.time;
+        String sunset = weather.result.daily.astro.get(0).sunset.time;
+        sunriseTextView.setText(sunrise);
+        sunsetTextView.setText(sunset);
     }
 
     /**
@@ -255,7 +200,7 @@ public class WeatherFragment extends Fragment {
         @NonNull
         @Override
         public WeatherReportItemListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(getActivity()).inflate(R.layout.weather_report_item, parent, false);
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.weather_show_report_recyclerview_item, parent, false);
             WeatherReportItemListViewHolder viewHolder = new WeatherReportItemListViewHolder(view);
             return viewHolder;
         }

@@ -3,18 +3,16 @@ package com.jzj.weatherlearn.ui;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,7 +22,6 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -86,6 +83,7 @@ public class CitySelectActivity extends AppCompatActivity {
     private RecyclerView cityContainer;
     private CitySelectRecyclerViewAdapter adapter;
     private Button locationBtn;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +93,12 @@ public class CitySelectActivity extends AppCompatActivity {
         /**
          * actionbar
          */
+        toolbar = findViewById(R.id.city_selected_toolbar);
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-            actionBar.setCustomView(R.layout.activity_city_manage_toolbar_customerview);
+            actionBar.setCustomView(R.layout.city_manage_toolbar_customerview);
             TextView titleText = actionBar.getCustomView().findViewById(R.id.city_manage_toolbar_title);
             titleText.setText(MENU_TITLE);
             if (CitySetting.getInstance().getCachesCitiesSize() > 0) {
@@ -353,7 +353,7 @@ public class CitySelectActivity extends AppCompatActivity {
         @NonNull
         @Override
         public CitySelectRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View itemView = LayoutInflater.from(App.context).inflate(R.layout.city_select_item, parent, false);
+            View itemView = LayoutInflater.from(App.context).inflate(R.layout.city_selected_recyclerview_item, parent, false);
             return new CitySelectRecyclerViewHolder(itemView);
         }
 

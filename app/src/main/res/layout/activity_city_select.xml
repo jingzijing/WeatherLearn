@@ -7,8 +7,13 @@
     android:orientation="vertical"
     tools:context=".ui.CitySelectActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/city_selected_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
+
     <!--省份和搜索栏-->
-    <include layout="@layout/city_search" />
+    <include layout="@layout/city_selected_search" />
 
     <!--定位-->
     <Button

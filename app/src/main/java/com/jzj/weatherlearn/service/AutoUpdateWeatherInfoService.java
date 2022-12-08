@@ -20,6 +20,7 @@ import com.jzj.weatherlearn.global.CitySetting;
 import com.jzj.weatherlearn.model.City;
 import com.jzj.weatherlearn.tool.ApiUtil;
 import com.jzj.weatherlearn.tool.DataUtil;
+import com.jzj.weatherlearn.tool.NetworkUtil;
 
 import java.io.IOException;
 import java.util.List;
@@ -63,7 +64,7 @@ public class AutoUpdateWeatherInfoService extends Service {
         registerReceiver(alarmReceiver, intentFilter);
 
         alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        pendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(ALARM_ACTION), 0);
+        pendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(ALARM_ACTION), PendingIntent.FLAG_IMMUTABLE);
         setTimingType(true);
 
     }
@@ -87,35 +88,22 @@ public class AutoUpdateWeatherInfoService extends Service {
     private void updateWeather() {
         List<City> cityList = CitySetting.getInstance().getCacheCities();
         for (int i = 0; i < cityList.size(); i++) {
-            //url拼接
-            String url = ApiUtil.WEATHER_API_URL.replace(ApiUtil.REPLACE_STR, cityList.get(i).getLon() + "," + cityList.get(i).getLat());
-            int cityCode = cityList.get(i).getCityCode();
-            new Thread(new Runnable() {
+            City city = cityList.get(i);
+            NetworkUtil.sendWeatherRequest(city, new Callback() {
                 @Override
-                public void run() {
-                    OkHttpClient client = new OkHttpClient();
-                    Request request = new Request.Builder()
-                            .url(url)
-                            .build();
-                    //发送请求并回调
-                    client.newCall(request)
-                            .enqueue(new Callback() {
-                                @Override
-                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
 
-                                }
-
-                                @Override
-                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                    String responseStr = response.body().string();
-                                    //写入缓存
-                                    if (responseStr != null) {
-                                        DataUtil.writeSharedPreferences(String.valueOf(cityCode), responseStr, App.sharedPreferences);
-                                    }
-                                }
-                            });
                 }
-            }).start();
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    String responseStr = response.body().string();
+                    //写入缓存
+                    if (responseStr != null) {
+                        DataUtil.writeSharedPreferences(String.valueOf(city.getCityCode()), responseStr, App.sharedPreferences);
+                    }
+                }
+            });
         }
     }
 

@@ -16,6 +16,8 @@ import com.jzj.weatherlearn.model.WeatherAndCityModel;
 import com.jzj.weatherlearn.tool.ApiUtil;
 import com.jzj.weatherlearn.tool.DataUtil;
 import com.jzj.weatherlearn.tool.GsonUtil;
+import com.jzj.weatherlearn.tool.NetworkUtil;
+import com.jzj.weatherlearn.ui.ActivityCallback;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,42 +50,6 @@ public class WeatherAndCityViewModel extends AndroidViewModel {
     }
 
     /**
-     * 请求天气预报API
-     * 传入city对象获取经纬度
-     */
-    private void sendWeatherRequest(City city, Callback callback) {
-        String buffer = city.getLon() + "," + city.getLat();
-        sendWeatherRequest(buffer, callback);
-    }
-
-    /**
-     * 请求天气预报API
-     * 传入经纬度数值
-     */
-    private void sendWeatherRequest(double longitude, double latitude, Callback callback) {
-        String buffer = longitude + "," + latitude;
-        sendWeatherRequest(buffer, callback);
-    }
-
-    /**
-     * 请求天气预报API
-     * 传入经纬度字符串
-     */
-    private void sendWeatherRequest(String LongitudeAndLatitude, Callback callback) {
-        String url = ApiUtil.WEATHER_API_URL.replace(ApiUtil.REPLACE_STR, LongitudeAndLatitude);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                OkHttpClient client = new OkHttpClient();
-                Request request = new Request.Builder()
-                        .url(url)
-                        .build();
-                client.newCall(request).enqueue(callback);
-            }
-        }).start();
-    }
-
-    /**
      * 获取天气信息
      */
     public void getWeatherInfo(City city) {
@@ -92,7 +58,7 @@ public class WeatherAndCityViewModel extends AndroidViewModel {
         String weatherCacheByCityStr = DataUtil.readSharedPreferences(String.valueOf(city.getCityCode()), App.sharedPreferences);
         if (weatherCacheByCityStr == null) {
             //网络请求天气信息
-            sendWeatherRequest(city, new Callback() {
+            NetworkUtil.sendWeatherRequest(city, new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
                     displayToast("请求失败");
@@ -111,9 +77,7 @@ public class WeatherAndCityViewModel extends AndroidViewModel {
             });
         } else {
             weather[0] = GsonUtil.handlerWeatherJson(weatherCacheByCityStr);
-            if (weather[0] == null) {
-                displayToast("weather not info");
-            } else {
+            if (weather[0] != null) {
                 updateWeatherInfoByCityCode(city.getCityCode(), weather[0]);
             }
         }
@@ -167,6 +131,21 @@ public class WeatherAndCityViewModel extends AndroidViewModel {
     public void clearLivedata() {
         livedata.setValue(null);
         livedata = null;
+    }
+
+    /**
+     * 根据城市代号找城市
+     */
+    public City findCityByCode(int cityCode) {
+        if (livedata.getValue() == null) {
+            return null;
+        }
+        for (WeatherAndCityModel weatherAndCityModel : livedata.getValue()) {
+            if (weatherAndCityModel.getCity().getCityCode() == cityCode) {
+                return weatherAndCityModel.getCity();
+            }
+        }
+        return null;
     }
 
 }

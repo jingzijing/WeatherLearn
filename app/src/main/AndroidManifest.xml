@@ -4,8 +4,10 @@
     package="com.jzj.weatherlearn">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".global.App"
@@ -18,7 +20,7 @@
         android:largeHeap="false"
         android:roundIcon="@mipmap/ic_weather"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApplication14"
+        android:theme="@style/Theme.WeatherLearn"
         tools:targetApi="31">
         <!--更新缓存信息服务-->
         <service
