@@ -1,5 +1,5 @@
-# WeatherLearn
-android平台 天气预报APP
+# 天天天气
+android平台 天气预报APP 学习
 
 ### 页面
 |   天气数据展示  |  城市列表选择  |  城市信息管理  |
