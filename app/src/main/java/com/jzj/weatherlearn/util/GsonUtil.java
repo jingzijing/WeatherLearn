@@ -1,4 +1,4 @@
-package com.jzj.weatherlearn.tool;
+package com.jzj.weatherlearn.util;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

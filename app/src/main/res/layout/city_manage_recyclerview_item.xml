@@ -1,16 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:layout_margin="8dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <TextView
-        android:id="@+id/city_manage_city_name"
-        android:layout_width="wrap_content"
+    <data>
+        <variable
+            name="city"
+            type="com.jzj.weatherlearn.model.City" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="城市名称"
-        android:textSize="28sp"
-        android:layout_marginLeft="32dp" />
+        android:padding="16dp"
+        android:layout_margin="8dp">
 
-</androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/city_manage_city_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{city.cityName}"
+            android:textSize="28sp"
+            android:layout_marginLeft="32dp" />
+
+    </androidx.cardview.widget.CardView>
+</layout>

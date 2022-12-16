@@ -1,72 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.WeatherActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
 
-    <com.rainy.weahter_bg_plug.WeatherBg
-        android:id="@+id/weather_bg"
+        <variable
+            name="weatherAndCityModel"
+            type="com.jzj.weatherlearn.model.WeatherAndCityModel" />
+
+    </data>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_collapseMode="parallax"
-        app:type="heavyRainy" />
+        tools:context=".ui.WeatherActivity">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_page"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_city_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="36dp"
-        android:src="@drawable/ic_baseline_add_24" />
-
-    <com.jzj.weatherlearn.ui.widget.ViewPagerIndicator
-        android:id="@+id/indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="32dp" />
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#00000000">
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbar_layout"
+        <com.rainy.weahter_bg_plug.WeatherBg
+            android:id="@+id/weather_bg"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:minHeight="?attr/actionBarSize"
-            app:collapsedTitleGravity="left"
-            app:contentScrim="@color/white"
-            app:expandedTitleGravity="left|bottom"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:statusBarScrim="@android:color/transparent"
-            app:titleEnabled="false"
-            app:toolbarId="@id/weather_show_toolbar">
+            android:layout_height="match_parent"
+            app:layout_collapseMode="parallax"
+            app:type="heavyRainy" />
 
-            <include layout="@layout/weather_show_city_name_content" />
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_page"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/weather_show_toolbar"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_city_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="24dp"
+            android:layout_marginBottom="36dp"
+            android:src="@drawable/ic_baseline_add_24" />
+
+        <com.jzj.weatherlearn.ui.widget.ViewPagerIndicator
+            android:id="@+id/indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="32dp" />
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#00000000">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar_layout"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:menu="@menu/menu_main" />
+                android:layout_height="200dp"
+                android:minHeight="?attr/actionBarSize"
+                app:collapsedTitleGravity="left"
+                app:contentScrim="@color/white"
+                app:expandedTitleGravity="left|bottom"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:statusBarScrim="@android:color/transparent"
+                app:titleEnabled="false"
+                app:toolbarId="@id/weather_show_toolbar">
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+                <include
+                    layout="@layout/weather_show_city_name_content"
+                    app:WeatherAndCityModel="@{weatherAndCityModel}" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/weather_show_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"
+                    app:menu="@menu/menu_main" />
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

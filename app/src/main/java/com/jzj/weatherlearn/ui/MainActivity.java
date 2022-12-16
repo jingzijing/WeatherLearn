@@ -11,7 +11,7 @@ import com.jzj.weatherlearn.global.App;
 import com.jzj.weatherlearn.global.CitySetting;
 import com.jzj.weatherlearn.model.City;
 import com.jzj.weatherlearn.service.AutoUpdateWeatherInfoService;
-import com.jzj.weatherlearn.tool.DataUtil;
+import com.jzj.weatherlearn.util.DataUtil;
 
 import java.io.IOException;
 import java.util.List;

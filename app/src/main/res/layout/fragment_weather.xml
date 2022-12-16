@@ -1,18 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout
+    <data>
+
+        <variable
+            name="weather"
+            type="com.jzj.weatherlearn.model.Weather" />
+
+        <variable
+            name="city"
+            type="com.jzj.weatherlearn.model.City" />
+
+        <variable
+            name="adapter"
+            type="com.jzj.weatherlearn.ui.adapter.WeatherReportItemListAdapter" />
+
+        <variable
+            name="layoutManager"
+            type="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    </data>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <include layout="@layout/weather_show_report_content" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <include layout="@layout/weather_show_life_advice_content" />
+            <include
+                layout="@layout/weather_show_report_content"
+                app:adapter="@{adapter}"
+                app:layoutManager="@{layoutManager}" />
 
-        <include layout="@layout/weather_show_sunrise_and_sunset_content" />
+            <include
+                layout="@layout/weather_show_life_advice_content"
+                app:Weather="@{weather}" />
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            <include
+                layout="@layout/weather_show_sunrise_and_sunset_content"
+                app:Weather="@{weather}" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

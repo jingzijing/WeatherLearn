@@ -1,4 +1,4 @@
-package com.jzj.weatherlearn.tool;
+package com.jzj.weatherlearn.util;
 
 public class ApiUtil {
 

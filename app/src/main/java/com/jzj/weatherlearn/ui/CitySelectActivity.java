@@ -37,10 +37,12 @@ import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.Permission;
 import com.hjq.permissions.XXPermissions;
 import com.jzj.weatherlearn.R;
+import com.jzj.weatherlearn.databinding.ActivityCitySelectBinding;
 import com.jzj.weatherlearn.global.App;
 import com.jzj.weatherlearn.global.CitySetting;
 import com.jzj.weatherlearn.model.City;
-import com.jzj.weatherlearn.tool.KeyBordUtil;
+import com.jzj.weatherlearn.ui.base.BaseActivity;
+import com.jzj.weatherlearn.util.KeyBordUtil;
 import com.jzj.weatherlearn.viewmodel.CityViewModel;
 
 import org.angmarch.views.NiceSpinner;
@@ -54,7 +56,8 @@ import java.util.List;
 /**
  * 城市选择界面
  */
-public class CitySelectActivity extends AppCompatActivity {
+public class CitySelectActivity extends BaseActivity<ActivityCitySelectBinding>
+{
 
     public static final int CITY_SELECT_ACTIVITY_FINISH_MESSAGE = 1;
     private final String MENU_TITLE = "城市列表";
@@ -71,7 +74,6 @@ public class CitySelectActivity extends AppCompatActivity {
     }
 
     private Handler mHandler = new mHandler();
-    private String TAG = CitySelectActivity.class.getName();
     private CityViewModel cityViewModel;
     private int mCityLevel;
     private List<City> mCityList;
@@ -88,7 +90,6 @@ public class CitySelectActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_city_select);
         mContext = this;
         /**
          * actionbar
@@ -256,6 +257,12 @@ public class CitySelectActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected int getLayoutId()
+    {
+        return R.layout.activity_city_select;
     }
 
     /**

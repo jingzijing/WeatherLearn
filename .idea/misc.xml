@@ -22,8 +22,10 @@
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/activity_weather_item.xml" value="0.19322916666666667" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/city_level_spinner_drop_item.xml" value="0.17806484295845998" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/city_level_spinner_item.xml" value="0.36614583333333334" />
+        <entry key="..\:/WeatherLearn/app/src/main/res/layout/city_manage_recyclerview_item.xml" value="0.35190217391304346" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/city_search.xml" value="0.16" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/city_select_item.xml" value="0.18645833333333334" />
+        <entry key="..\:/WeatherLearn/app/src/main/res/layout/city_selected_search.xml" value="0.35190217391304346" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/fragment_city_select.xml" value="0.35144927536231885" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/fragment_srcoller_content.xml" value="0.25" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/fragment_weather.xml" value="0.25" />
@@ -37,6 +39,7 @@
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/weather_show_city_name_content.xml" value="0.25" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/weather_show_life_advice_content.xml" value="0.16927083333333334" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/weather_show_report_content.xml" value="0.34791666666666665" />
+        <entry key="..\:/WeatherLearn/app/src/main/res/layout/weather_show_report_recyclerview_item.xml" value="0.35190217391304346" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/weather_show_srcoller_content.xml" value="0.34791666666666665" />
         <entry key="..\:/WeatherLearn/app/src/main/res/layout/weather_show_sunrise_and_sunset_content.xml" value="0.33" />
         <entry key="..\:/WeatherLearn/app/src/main/res/menu/menu_main.xml" value="0.1875" />

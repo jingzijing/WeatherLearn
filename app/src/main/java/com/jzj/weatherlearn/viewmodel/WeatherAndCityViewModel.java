@@ -13,11 +13,11 @@ import com.jzj.weatherlearn.global.CitySetting;
 import com.jzj.weatherlearn.model.City;
 import com.jzj.weatherlearn.model.Weather;
 import com.jzj.weatherlearn.model.WeatherAndCityModel;
-import com.jzj.weatherlearn.tool.ApiUtil;
-import com.jzj.weatherlearn.tool.DataUtil;
-import com.jzj.weatherlearn.tool.GsonUtil;
-import com.jzj.weatherlearn.tool.NetworkUtil;
-import com.jzj.weatherlearn.ui.ActivityCallback;
+import com.jzj.weatherlearn.util.DataUtil;
+import com.jzj.weatherlearn.util.GsonUtil;
+import com.jzj.weatherlearn.util.NetworkUtil;
+import com.jzj.weatherlearn.util.ToastUtil;
+import com.jzj.weatherlearn.viewmodel.base.BaseViewModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,18 +25,14 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 
-public class WeatherAndCityViewModel extends AndroidViewModel {
-
+public class WeatherAndCityViewModel extends BaseViewModel
+{
     MutableLiveData<List<WeatherAndCityModel>> livedata;
-    Context context;
 
     public WeatherAndCityViewModel(@NonNull Application application) {
         super(application);
-        context = application.getApplicationContext();
         /**
          * livedata初始化
          */
@@ -61,7 +57,7 @@ public class WeatherAndCityViewModel extends AndroidViewModel {
             NetworkUtil.sendWeatherRequest(city, new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    displayToast("请求失败");
+
                 }
 
                 @Override
@@ -91,13 +87,6 @@ public class WeatherAndCityViewModel extends AndroidViewModel {
                 .remove(String.valueOf(city.getCityCode()))
                 .apply();
         getWeatherInfo(city);
-    }
-
-    /**
-     * Toast
-     */
-    private void displayToast(String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 
     /**

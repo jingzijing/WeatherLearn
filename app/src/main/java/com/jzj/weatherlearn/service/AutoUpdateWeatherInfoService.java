@@ -10,7 +10,6 @@ import android.content.IntentFilter;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,17 +17,14 @@ import androidx.annotation.Nullable;
 import com.jzj.weatherlearn.global.App;
 import com.jzj.weatherlearn.global.CitySetting;
 import com.jzj.weatherlearn.model.City;
-import com.jzj.weatherlearn.tool.ApiUtil;
-import com.jzj.weatherlearn.tool.DataUtil;
-import com.jzj.weatherlearn.tool.NetworkUtil;
+import com.jzj.weatherlearn.util.DataUtil;
+import com.jzj.weatherlearn.util.NetworkUtil;
 
 import java.io.IOException;
 import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 
 /**

@@ -3,8 +3,8 @@ package com.jzj.weatherlearn.global;
 import android.os.AsyncTask;
 
 import com.jzj.weatherlearn.model.City;
-import com.jzj.weatherlearn.tool.DataUtil;
-import com.jzj.weatherlearn.tool.GsonUtil;
+import com.jzj.weatherlearn.util.DataUtil;
+import com.jzj.weatherlearn.util.GsonUtil;
 
 import java.util.ArrayList;
 import java.util.List;
