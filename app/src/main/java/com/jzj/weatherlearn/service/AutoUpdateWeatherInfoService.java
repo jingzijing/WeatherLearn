@@ -66,6 +66,12 @@ public class AutoUpdateWeatherInfoService extends Service {
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
+        return Service.START_REDELIVER_INTENT;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(alarmReceiver);
