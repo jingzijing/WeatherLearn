@@ -1,15 +1,18 @@
 package com.jzj.weatherlearn.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +33,7 @@ import com.jzj.weatherlearn.global.CitySetting;
 import com.jzj.weatherlearn.model.City;
 import com.jzj.weatherlearn.ui.adapter.CityManageRecyclerViewAdapter;
 import com.jzj.weatherlearn.ui.base.BaseActivity;
+import com.jzj.weatherlearn.util.ScreenAdaptedUtil;
 
 import java.util.List;
 
@@ -38,7 +43,7 @@ public class CityManageActivity extends BaseActivity<ActivityCityManageBinding>
 	private RecyclerView recyclerView;
 	private List<City> mCityList;
 	private CityManageRecyclerViewAdapter adapter;
-	private Context mContext = this;
+	private Activity mContext = this;
 	private Toolbar toolbar;
 
 	@Override
@@ -138,7 +143,7 @@ public class CityManageActivity extends BaseActivity<ActivityCityManageBinding>
 			@Override
 			public void run()
 			{
-				new AlertDialog.Builder(mContext).setTitle("确认删除所有城市缓存")
+				AlertDialog alertDialog = new AlertDialog.Builder(mContext).setTitle("确认删除所有城市缓存")
 						.setPositiveButton("确定", new DialogInterface.OnClickListener()
 						{
 							@Override
@@ -153,6 +158,18 @@ public class CityManageActivity extends BaseActivity<ActivityCityManageBinding>
 						})
 						.setNegativeButton("取消", null)
 						.show();
+
+				// dialog适配宽度
+				if (alertDialog.getWindow() != null)
+				{
+					WindowManager.LayoutParams layoutParams = alertDialog.getWindow()
+							.getAttributes();
+					layoutParams.width = mContext.getWindowManager()
+							.getDefaultDisplay()
+							.getWidth() / 10 * 8;
+					layoutParams.gravity = Gravity.CENTER;
+					alertDialog.getWindow().setAttributes(layoutParams);
+				}
 			}
 		});
 	}
